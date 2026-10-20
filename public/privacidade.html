@@ -18,21 +18,21 @@
     <h1>Os seus dados.<br>Informação clara.</h1>
     <p class="privacy-lead">Política de Privacidade e Proteção de Dados</p>
     <p class="privacy-date">Atualizada em 20 de outubro de 2026.</p>
-    <div class="privacy-summary"><strong>O formulário prepara um briefing no seu dispositivo.</strong><p>Os dados que preenche não são enviados automaticamente à Pro4build. Só recebemos o documento se decidir partilhá-lo connosco por outro meio.</p></div>
+    <div class="privacy-summary"><strong>O formulário envia o seu pedido por email à Pro4build.</strong><p>Ao selecionar «Enviar o meu projeto», o nome, os contactos e as informações do projeto são transmitidos ao servidor do website e enviados para geral@pro4build.com através do serviço SMTP da conta do domínio. Pode guardar uma cópia local do briefing.</p></div>
 
     <section aria-labelledby="responsavel"><h2 id="responsavel">1. Quem é responsável</h2>
       <p>A entidade responsável pelo website pro4build.com e pelo tratamento dos pedidos que lhe sejam dirigidos é <strong>AART, Lda.</strong>, NIF <strong>513442740</strong>, com sede na Rua Varandas para o Mar, 19, 2970-693 Sesimbra, Portugal.</p>
       <p>Para questões de privacidade e exercício de direitos: <a href="mailto:geral@pro4build.com">geral@pro4build.com</a> ou a morada acima.</p>
     </section>
     <section aria-labelledby="dados"><h2 id="dados">2. Que dados são utilizados</h2>
-      <ul><li><strong>Briefing:</strong> nome, email, contacto telefónico, localidade da construção, situação do projeto, área pretendida, investimento previsto e mensagem. Os campos assinalados como obrigatórios são necessários para gerar um briefing com os seus contactos; pode optar por não o preencher.</li>
+      <ul><li><strong>Briefing:</strong> nome, email, contacto telefónico, localidade da construção, situação do projeto, área pretendida, investimento previsto e mensagem. Os campos assinalados como obrigatórios são necessários para analisar o pedido e permitir uma resposta; pode optar por não o preencher.</li>
       <li><strong>Simuladores:</strong> parâmetros e resultados introduzidos ou calculados no navegador. Se escolher «Preparar projeto com esta simulação», o resumo é transferido para o briefing através de armazenamento temporário da sessão.</li>
       <li><strong>Acesso ao site:</strong> o prestador de alojamento pode tratar endereço IP, data e hora de acesso, páginas pedidas e informação técnica do navegador para entregar o site e prevenir incidentes.</li>
       <li><strong>Contactos diretos:</strong> quando nos envia voluntariamente um email ou briefing, tratamos os dados de contacto e o conteúdo necessário para responder.</li></ul>
       <p>Não inclua documentos de identificação, dados bancários, dados de saúde ou outros dados sensíveis na descrição do projeto.</p>
     </section>
     <section aria-labelledby="finalidades"><h2 id="finalidades">3. Para que fins e com que fundamento</h2>
-      <p>O formulário e os simuladores efetuam operações locais para disponibilizar as funcionalidades que solicita. Não existe um serviço de submissão do formulário nem uma base de dados de contactos ligada a esta versão do site.</p>
+      <p>O formulário transmite os dados por ligação HTTPS a uma função de servidor alojada na Vercel. Essa função valida o pedido e envia uma mensagem para geral@pro4build.com através do serviço SMTP do domínio, com ligação cifrada. A aplicação não guarda os pedidos numa base de dados própria. Os simuladores efetuam os cálculos no navegador.</p>
       <p>Se nos contactar sobre uma proposta ou projeto, utilizamos os dados necessários para responder e realizar diligências pré-contratuais a seu pedido, ao abrigo do artigo 6.º, n.º 1, alínea b), do RGPD. Outros pedidos gerais são tratados com base no interesse legítimo em responder às comunicações recebidas, nos termos da alínea f). Os dados estritamente necessários ao funcionamento e à segurança do website são tratados com base no interesse legítimo de disponibilizar um serviço seguro.</p>
       <p>Quando existam obrigações legais aplicáveis, o tratamento necessário ao seu cumprimento baseia-se na alínea c). Este formulário não subscreve newsletters nem autoriza comunicações de marketing.</p>
     </section>
@@ -42,7 +42,7 @@
     </section>
     <section aria-labelledby="destinatarios"><h2 id="destinatarios">5. Prestadores e transferências</h2>
       <p>O site utiliza alojamento Vercel. Ao visitar o website, são estabelecidas ligações a essa infraestrutura, que pode tratar dados técnicos. Consulte a <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">informação de privacidade da Vercel</a> e o seu <a href="https://vercel.com/legal/dpa" target="_blank" rel="noopener noreferrer">acordo de tratamento de dados</a>, incluindo informação sobre subcontratantes e transferências internacionais.</p>
-      <p>Os campos do formulário não são transmitidos a esse alojamento pela aplicação. Se escolher partilhar o briefing por email, o envio envolve os prestadores de email utilizados pelo remetente e pelo destinatário. Não vendemos dados pessoais. Os dados poderão ser comunicados a autoridades quando tal seja legalmente exigido.</p>
+      <p>Os dados do formulário são processados pela função de servidor na Vercel e pelo prestador de email da conta geral@pro4build.com para encaminhar e receber o pedido. As mensagens recebidas ficam na caixa de email e podem estar sujeitas às políticas de conservação e cópias de segurança do prestador. As credenciais SMTP são guardadas nas variáveis de ambiente do servidor, não são enviadas ao navegador e não são incluídas no repositório. A aplicação não regista o conteúdo dos pedidos em logs. Se utilizar a opção de email direto, o envio envolve também o prestador de email que escolher. Não vendemos dados pessoais. Os dados poderão ser comunicados a autoridades quando tal seja legalmente exigido.</p>
     </section>
     <section aria-labelledby="direitos"><h2 id="direitos">6. Os seus direitos</h2>
       <p>Nos termos e limites previstos no RGPD, pode pedir acesso, retificação, apagamento, limitação do tratamento e portabilidade, e opor-se a tratamentos baseados em interesses legítimos. Se algum tratamento futuro se basear em consentimento, poderá retirá-lo sem afetar a licitude do tratamento anterior.</p>
