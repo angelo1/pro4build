@@ -1,0 +1,6 @@
+{
+  "name": "pro4build",
+  "private": true,
+  "scripts": { "test": "node --test tests/*.test.cjs" },
+  "dependencies": { "nodemailer": "10.1.7" }
+}

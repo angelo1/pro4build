@@ -3,5 +3,10 @@
   "framework": null,
   "buildCommand": "",
   "outputDirectory": "public",
-  "cleanUrls": false
+  "cleanUrls": false,
+  "functions": {
+    "api/contacto.js": {
+      "maxDuration": 30
+    }
+  }
 }
