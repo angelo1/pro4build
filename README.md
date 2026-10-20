@@ -50,13 +50,13 @@ node --test tests/model.test.cjs
 - Navegação, fases, separadores do relatório, simuladores e download de briefing funcionam no navegador.
 - As simulações podem ser guardadas como texto ou impressas.
 - O botão de preparar projeto transporta a simulação para o briefing na página inicial através de sessionStorage.
-- O formulário pede nome, email e telefone e **não envia contactos automaticamente**. Gera um briefing local com esses dados. Uma ligação abre o programa de email para o visitante anexar o ficheiro e confirmar o envio para angelo.belchior@pro4build.com.
+- O formulário pede nome, email e telefone e **não envia contactos automaticamente**. Gera um briefing local com esses dados. Uma ligação abre o programa de email para o visitante anexar o ficheiro e confirmar o envio para geral@pro4build.com.
 - O relatório de obra tem dados fictícios; não existe autenticação, área de cliente ou ligação a obras reais.
 - A imagem de moradia é uma visualização gerada, não um projeto executado.
 - Não há analytics, publicidade ou serviço de email configurado.
 - Preços, suplementos, IVA e prazos dos simuladores são pressupostos indicativos. Validar a tabela comercial antes do lançamento.
 - O cálculo de terreno não consulta PDM nem confirma edificabilidade.
-- A política de privacidade está em public/privacidade.html e identifica a AART, Lda., NIF 513442740. O contacto de privacidade aprovado é angelo.belchior@pro4build.com. Antes de ativar envio automático, definir o prestador, segurança, conservação e transferências, e atualizar esta política.
+- A política de privacidade está em public/privacidade.html e identifica a AART, Lda., NIF 513442740. O contacto de privacidade aprovado é geral@pro4build.com. Antes de ativar envio automático, definir o prestador, segurança, conservação e transferências, e atualizar esta política.
 
 ## Continuar o trabalho no Codex
 
