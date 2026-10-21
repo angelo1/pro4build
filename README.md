@@ -89,3 +89,11 @@ O endpoint valida origem, formato, limites de campos e honeypot. Não aceita des
 ## Landing page Setúbal
 
 A rota `/setubal` é reescrita pela Vercel para `public/setubal.html`, com CSS e JavaScript próprios e os assets de marca existentes. O formulário usa `/api/contacto`, com os mesmos requisitos e credenciais SMTP da página inicial. Inclui `origem=/setubal` no email e identifica Setúbal no assunto, sem cookies de marketing ou pixels adicionais. A comparação de valores é apresentada como possibilidade dependente de análise, com exclusões e FAQ; não são publicados preços, imóveis disponíveis ou testemunhos não verificados.
+
+## Meta Pixel na landing
+
+Apenas `/setubal` usa o Pixel `1188357206101087`. O script externo só é carregado após consentimento explícito para marketing; recusar não impede o formulário. A escolha é guardada localmente por 180 dias e pode ser alterada em «Preferências de cookies».
+
+Eventos: `PageView` na primeira ativação por página; `Lead` uma vez após confirmação de aceitação do pedido SMTP, apenas com consentimento ativo. Não há envio retroativo se o visitante aceitar só depois de submeter. Não se enviam nome, email, telefone ou texto do formulário como parâmetros, nem se configura correspondência avançada. O `Lead` é um sinal de aceitação SMTP, não de entrega garantida na caixa de email.
+
+Validar a receção no Gestor de Eventos da Meta usando Testar eventos e o consentimento ativo. Bloqueadores de anúncios e a recusa de marketing podem impedir eventos; isso é esperado.

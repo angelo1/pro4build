@@ -1,5 +1,12 @@
 (function(){
   const en={
+    'Preferências de cookies':'Cookie preferences',
+    'Cookies de marketing':'Marketing cookies',
+    'Com a tua autorização, usamos o Meta Pixel para medir visitas e pedidos de contacto e melhorar os anúncios. A Meta pode receber dados do navegador e associá-los à tua conta. Podes recusar e usar o formulário na mesma.':'With your permission, we use the Meta Pixel to measure visits and enquiries and improve our ads. Meta may receive browser data and link it to your account. You can decline and still use the form.',
+    'Saber mais na política de privacidade':'Read more in our privacy policy',
+    'Recusar marketing':'Reject marketing',
+    'Aceitar marketing':'Accept marketing',
+
     'Uma moradia pelo valor de um apartamento? | Pro4build Setúbal':'A house for the price of an apartment? | Pro4build Setúbal',
     'Saltar para o conteúdo':'Skip to content',
     'Pro4build — início':'Pro4build — home',

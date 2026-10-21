@@ -15,7 +15,8 @@ form.addEventListener('submit',async event=>{
     const response=await fetch('/api/contacto',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(form))),signal:controller.signal});
     const data=await response.json();
     if(!response.ok||data.ok!==true)throw new Error(data.error||tr('Não foi possível confirmar o envio.'));
-    sent=true;status.textContent=tr('Obrigado! O teu pedido foi aceite pelo serviço de email para envio à Pro4build. Vamos analisar a informação para entrar em contacto contigo. Não precisas de voltar a enviar.');
+    sent=true;try{window.pro4buildPixel?.lead();}catch{}
+    status.textContent=tr('Obrigado! O teu pedido foi aceite pelo serviço de email para envio à Pro4build. Vamos analisar a informação para entrar em contacto contigo. Não precisas de voltar a enviar.');
     button.textContent=tr('Pedido enviado ✓');mobileCta.hidden=true;
   }catch(error){
     status.setAttribute('role','alert');
