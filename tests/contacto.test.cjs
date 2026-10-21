@@ -42,3 +42,9 @@ test('rejeita email com injeção de cabeçalhos, campos obrigatórios vazios e 
     const res=response();await handler(request({body:{...body,...fields}}),res);assert.equal(res.code,400);
   }
 });
+
+ test('identifica os pedidos da landing Setúbal no assunto e no corpo',async()=>{
+  let mail;const handler=createHandler({env,createTransport:()=>({sendMail:async data=>{mail=data;return {accepted:['geral@pro4build.com']}},close(){}})});
+  const res=response();await handler(request({body:{...body,origem:'/setubal'}}),res);
+  assert.equal(res.code,202);assert.match(mail.subject,/Setúbal/);assert.match(mail.text,/Página de origem: \/setubal/);
+ });
