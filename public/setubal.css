@@ -5,3 +5,5 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button{transition:none}}@media print{.header,.mobile-cta,.closing,form{display:none}.section{padding:25px}.hero{display:block}.hero-photo{display:none}}
 
 input,select,textarea{min-width:0;max-width:100%}@media(max-width:380px){.header img{width:110px}.header .button{font-size:9px;padding:10px;gap:6px}.hero h1{font-size:46px}}
+
+.language-switch{display:flex;align-items:center;gap:10px;margin-left:auto;font-size:12px;letter-spacing:1px;flex-shrink:0}.language-switch a{padding:9px 2px;color:#697675}.language-switch a[aria-current]{color:#167d8d;font-weight:700;border-bottom:2px solid #167d8d}.language-switch span{color:#a9b0ad}@media(max-width:600px){.header .button-small{display:none}.language-switch{gap:12px;font-size:13px}}
