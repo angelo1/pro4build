@@ -85,3 +85,7 @@ Não guardar credenciais em ficheiros versionados. Usar `.env.example` apenas co
 O endpoint valida origem, formato, limites de campos e honeypot. Não aceita destinatários enviados pelo navegador e não permite anexos/URLs arbitrários. Ativar limitação de pedidos no firewall da Vercel conforme o tráfego; não existe limitação distribuída de pedidos na aplicação. Não repetir automaticamente mensagens com estado incerto.
 
 `npm test` executa testes de cálculo e de envio com transporte simulado, sem usar credenciais reais. O servidor estático Python não executa `/api/contacto`; o teste integrado requer Vercel Preview/Production com SMTP configurado.
+
+## Landing page Setúbal
+
+A rota `/setubal` é reescrita pela Vercel para `public/setubal.html`, com CSS e JavaScript próprios e os assets de marca existentes. O formulário usa `/api/contacto`, com os mesmos requisitos e credenciais SMTP da página inicial. Inclui `origem=/setubal` no email e identifica Setúbal no assunto, sem cookies de marketing ou pixels adicionais. A comparação de valores é apresentada como possibilidade dependente de análise, com exclusões e FAQ; não são publicados preços, imóveis disponíveis ou testemunhos não verificados.

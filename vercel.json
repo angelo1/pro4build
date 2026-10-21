@@ -8,5 +8,11 @@
     "api/contacto.js": {
       "maxDuration": 30
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/setubal",
+      "destination": "/setubal.html"
+    }
+  ]
 }

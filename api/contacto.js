@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 const RECIPIENT = 'geral@pro4build.com';
 const ORIGINS = new Set(['https://pro4build.com', 'https://www.pro4build.com']);
-const FIELDS = {nome:100, email:254, telefone:30, local:100, fase:100, area:100, investimento:100, ideia:10000};
+const FIELDS = {nome:100, email:254, telefone:30, local:100, fase:100, area:100, investimento:100, ideia:10000, origem:200};
 const REQUIRED = ['nome', 'email', 'telefone', 'local', 'fase'];
 
 function createHandler({env = process.env, createTransport = nodemailer.createTransport} = {}) {
@@ -47,10 +47,10 @@ function createHandler({env = process.env, createTransport = nodemailer.createTr
         connectionTimeout:10000, greetingTimeout:10000, socketTimeout:15000,
         tls:{minVersion:'TLSv1.2'}, logger:false, debug:false,
         disableFileAccess:true, disableUrlAccess:true});
-      const labels = {nome:'Nome',email:'Email',telefone:'Telefone',local:'Local da construção',fase:'Situação',area:'Área',investimento:'Investimento previsto',ideia:'Ideia e prioridades'};
+      const labels = {nome:'Nome',email:'Email',telefone:'Telefone',local:'Local da construção',fase:'Situação',area:'Área',investimento:'Investimento previsto',ideia:'Ideia e prioridades',origem:'Página de origem'};
       const text = 'PRO4BUILD — NOVO PEDIDO DE PROJETO\n\n' + Object.entries(labels).map(([key,label]) => label + ': ' + (data[key] || 'Não indicado')).join('\n\n');
       const result = await transport.sendMail({from:{name:'Pro4build — Website',address:from}, to:RECIPIENT,
-        replyTo:{name:data.nome,address:data.email}, subject:'Novo pedido de projeto — Pro4build', text,
+        replyTo:{name:data.nome,address:data.email}, subject:data.origem === '/setubal' ? 'Novo pedido de projeto — Pro4build | Setúbal' : 'Novo pedido de projeto — Pro4build', text,
         disableFileAccess:true, disableUrlAccess:true});
       if (!result.accepted?.some(address => String(address).toLowerCase() === RECIPIENT)) throw new Error('Recipient not accepted');
       return res.status(202).json({ok:true});
