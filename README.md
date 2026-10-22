@@ -97,3 +97,7 @@ Apenas `/setubal` usa o Pixel `1188357206101087`. O script externo só é carreg
 Eventos: `PageView` na primeira ativação por página; `Lead` uma vez após confirmação de aceitação do pedido SMTP, apenas com consentimento ativo. Não há envio retroativo se o visitante aceitar só depois de submeter. Não se enviam nome, email, telefone ou texto do formulário como parâmetros, nem se configura correspondência avançada. O `Lead` é um sinal de aceitação SMTP, não de entrega garantida na caixa de email.
 
 Validar a receção no Gestor de Eventos da Meta usando Testar eventos e o consentimento ativo. Bloqueadores de anúncios e a recusa de marketing podem impedir eventos; isso é esperado.
+
+## Recrutamento
+
+A secção `/#recrutamento` anuncia as quatro funções confirmadas pelo proprietário: encarregado de obra, pedreiro, servente e técnico de obra. O formulário recolhe contactos básicos, função, localidade e apresentação/disponibilidade opcionais. O backend reconhece `origem=/recrutamento`, valida a função e encaminha para `recrutamento@pro4build.com` com assunto próprio; os pedidos comerciais mantêm `geral@pro4build.com`. Não há eventos Pixel nas candidaturas, anexos no formulário ou seleção automática. O currículo pode ser enviado por email. O destino de recrutamento tem de existir e aceitar correio no fornecedor do domínio.

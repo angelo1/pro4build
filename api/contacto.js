@@ -34,6 +34,9 @@ function createHandler({env = process.env, createTransport = nodemailer.createTr
         !/^[+\d\s().-]{6,30}$/.test(data.telefone)) {
       return res.status(400).json({error:'Preencha nome, email, telefone, local e situação do projeto com dados válidos.'});
     }
+    const recruitment = data.origem === '/recrutamento';
+    const recipient = recruitment ? 'recrutamento@pro4build.com' : RECIPIENT;
+    if (recruitment && !['Encarregado de obra','Pedreiro','Servente','Técnico de obra'].includes(data.fase)) return res.status(400).json({error:'Selecione uma função válida.'});
     const port = Number(env.SMTP_PORT);
     const from = env.SMTP_FROM || env.SMTP_USER;
     if (!env.SMTP_HOST || !env.SMTP_USER || !env.SMTP_PASSWORD || ![465,587].includes(port) ||
@@ -47,12 +50,13 @@ function createHandler({env = process.env, createTransport = nodemailer.createTr
         connectionTimeout:10000, greetingTimeout:10000, socketTimeout:15000,
         tls:{minVersion:'TLSv1.2'}, logger:false, debug:false,
         disableFileAccess:true, disableUrlAccess:true});
-      const labels = {nome:'Nome',email:'Email',telefone:'Telefone',local:'Local da construção',fase:'Situação',area:'Área',investimento:'Investimento previsto',ideia:'Ideia e prioridades',origem:'Página de origem'};
-      const text = 'PRO4BUILD — NOVO PEDIDO DE PROJETO\n\n' + Object.entries(labels).map(([key,label]) => label + ': ' + (data[key] || 'Não indicado')).join('\n\n');
-      const result = await transport.sendMail({from:{name:'Pro4build — Website',address:from}, to:RECIPIENT,
-        replyTo:{name:data.nome,address:data.email}, subject:data.origem === '/setubal' ? 'Novo pedido de projeto — Pro4build | Setúbal' : 'Novo pedido de projeto — Pro4build', text,
+      const projectLabels = {nome:'Nome',email:'Email',telefone:'Telefone',local:'Local da construção',fase:'Situação',area:'Área',investimento:'Investimento previsto',ideia:'Ideia e prioridades',origem:'Página de origem'};
+      const labels = recruitment ? {nome:'Nome',email:'Email',telefone:'Telefone',local:'Localidade de residência',fase:'Função pretendida',area:'Disponibilidade',ideia:'Experiência e apresentação',origem:'Página de origem'} : projectLabels;
+      const text = (recruitment ? 'PRO4BUILD — NOVA CANDIDATURA\n\n' : 'PRO4BUILD — NOVO PEDIDO DE PROJETO\n\n') + Object.entries(labels).map(([key,label]) => label + ': ' + (data[key] || 'Não indicado')).join('\n\n');
+      const result = await transport.sendMail({from:{name:'Pro4build — Website',address:from}, to:recipient,
+        replyTo:{name:data.nome,address:data.email}, subject:recruitment ? 'Candidatura — Pro4build' : data.origem === '/setubal' ? 'Novo pedido de projeto — Pro4build | Setúbal' : 'Novo pedido de projeto — Pro4build', text,
         disableFileAccess:true, disableUrlAccess:true});
-      if (!result.accepted?.some(address => String(address).toLowerCase() === RECIPIENT)) throw new Error('Recipient not accepted');
+      if (!result.accepted?.some(address => String(address).toLowerCase() === recipient)) throw new Error('Recipient not accepted');
       return res.status(202).json({ok:true});
     } catch {
       // Não expor credenciais, respostas SMTP ou dados pessoais nos logs/resposta.
