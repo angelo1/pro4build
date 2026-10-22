@@ -30,6 +30,17 @@ test('sem credenciais não tenta enviar',async()=>{
   const handler=createHandler({env:{},createTransport:()=>{throw Error('Não deve ser chamado')}});
   const res=response();await handler(request(),res);assert.equal(res.code,503);
 });
+test('candidatura usa destinatário e assunto de recrutamento, sem misturar pedidos comerciais',async()=>{
+  let mail;const handler=createHandler({env,createTransport:()=>({sendMail:async data=>{mail=data;return {accepted:['recrutamento@pro4build.com']}},close(){}})});
+  const res=response();await handler(request({body:{...body,origem:'/recrutamento',fase:'Pedreiro',area:'Imediata',to:'intruso@example.test'}}),res);
+  assert.equal(res.code,202);assert.equal(mail.to,'recrutamento@pro4build.com');assert.equal(mail.subject,'Candidatura — Pro4build');assert.match(mail.text,/Função pretendida: Pedreiro/);assert.match(mail.text,/Disponibilidade: Imediata/);assert(!mail.text.includes('Local da construção'));
+});
+test('candidatura rejeita funções não anunciadas',async()=>{
+  const handler=createHandler({env,createTransport:()=>{throw Error('Não deve enviar')}});const res=response();await handler(request({body:{...body,origem:'/recrutamento',fase:'Função inválida'}}),res);assert.equal(res.code,400);
+});
+test('candidatura não confirma aceitação apenas do email comercial',async()=>{
+  const handler=createHandler({env,createTransport:()=>({sendMail:async()=>({accepted:['geral@pro4build.com']}),close(){}})});const res=response();await handler(request({body:{...body,origem:'/recrutamento',fase:'Servente'}}),res);assert.equal(res.code,502);
+});
 test('rejeita origem externa, métodos errados, JSON inválido e honeypot',async()=>{
   const handler=createHandler({env,createTransport:()=>{throw Error('Não deve ser chamado')}});
   for(const [req,expected] of [[request({method:'GET'}),405],[request({headers:{origin:'https://outro.test','content-type':'application/json'}}),403],[request({body:'{'}),400],[request({body:{...body,website:'spam'}}),400]]){
