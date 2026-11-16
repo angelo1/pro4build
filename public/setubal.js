@@ -10,9 +10,15 @@ form.addEventListener('submit',async event=>{
   if(button.disabled||sent||!form.reportValidity())return;
   button.disabled=true;form.setAttribute('aria-busy','true');status.hidden=false;
   status.setAttribute('role','status');status.textContent=tr('A enviar o teu pedido…');
-  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),35000);
+  let timeout;
+  const controller=new AbortController();
   try{
-    const response=await fetch('/api/contacto',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(form))),signal:controller.signal});
+    const payload=Object.fromEntries(new FormData(form));
+    for(const key of Object.keys(payload))if(typeof payload[key]!=='string')delete payload[key];
+    await window.pro4buildDocuments?.prepare(form,payload);
+    status.textContent=tr('A enviar o teu pedido…');
+    timeout=setTimeout(()=>controller.abort(),35000);
+    const response=await fetch('/api/contacto',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:controller.signal});
     const data=await response.json();
     if(!response.ok||data.ok!==true)throw new Error(data.error||tr('Não foi possível confirmar o envio.'));
     sent=true;try{window.pro4buildPixel?.lead();}catch{}
