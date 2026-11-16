@@ -111,4 +111,4 @@ O email recebe ligações assinadas válidas por 30 dias, sem anexos SMTP. Os fi
 
 Atualizar o bundle com `npm run build:documents` após alterar src/documentos.js. Testes usam SMTP simulado e armazenamento em memória, sem contactar leads reais.
 
-Os formulários da página principal e de /setubal usam dois cartões sequenciais: contactos (nome/email/telefone), depois dados de projeto e anexos opcionais. Continuar valida apenas os contactos e não envia emails. Voltar preserva os valores e ficheiros; o pedido completo é enviado apenas no último passo. O controlador partilhado está em public/form-steps.js.
+Os formulários da página principal e de /setubal usam dois cartões sequenciais: contactos (nome/email/telefone), depois dados de projeto e anexos opcionais. Enviar contactos e continuar valida e envia imediatamente nome, email e telefone como Fase 1. Voltar preserva os valores e ficheiros; a Fase 2 envia os dados completos e anexos no último passo. Os assuntos distinguem as fases e o corpo inclui a mesma referência, calculada a partir dos contactos e da origem. Cada fase tem deduplicação independente. O controlador partilhado está em public/form-steps.js.

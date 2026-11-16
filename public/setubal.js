@@ -13,7 +13,7 @@ form.addEventListener('submit',async event=>{
   let timeout;
   const controller=new AbortController();
   try{
-    const payload=Object.fromEntries(new FormData(form));
+    const payload=Object.fromEntries(new FormData(form));payload.etapa='2';
     for(const key of Object.keys(payload))if(typeof payload[key]!=='string')delete payload[key];
     await window.pro4buildDocuments?.prepare(form,payload);
     status.textContent=tr('A enviar o teu pedido…');

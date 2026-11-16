@@ -1,5 +1,10 @@
 (function(){
   const en={
+"Enviar contactos e continuar":"Send contact details and continue",
+"Ao continuar, envias os teus contactos à Pro4build para responder ao pedido. Consulta a":"By continuing, you send your contact details to Pro4build so we can respond to your enquiry. Read our",
+"A enviar os contactos…":"Sending your contact details…",
+"Contactos recebidos. Podes agora completar os dados do projeto.":"Contact details received. You can now complete your project details.",
+"Preencha nome, email e telefone com dados válidos.":"Please enter a valid name, email and phone number.",
 "Etapas do pedido":"Enquiry steps",
 "Contactos":"Contact details",
 "O projeto":"The project",
