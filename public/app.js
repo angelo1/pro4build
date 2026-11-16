@@ -27,7 +27,7 @@ briefForm.onsubmit=async e=>{
   e.preventDefault();
   const button=briefForm.querySelector('[type="submit"]');
   if(button.disabled||briefSent)return;
-  const data=Object.fromEntries(new FormData(briefForm));
+  const data=Object.fromEntries(new FormData(briefForm));data.etapa='2';
   for(const key of Object.keys(data))if(typeof data[key]!=='string')delete data[key];
   const status=document.querySelector('#send-status');
   const labels={nome:'Nome',email:'Email',telefone:'Contacto telefónico',local:'Local',fase:'Situação',area:'Área',investimento:'Investimento previsto',ideia:'Ideia e prioridades'};

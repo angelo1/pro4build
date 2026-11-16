@@ -81,3 +81,24 @@ test('documento inválido impede o envio do pedido',async()=>{
  const handler=createHandler({env,prepareDocuments:async()=>{throw Error('Invalid path')},createTransport:()=>{throw Error('Não deve enviar')}});
  const res=response();await handler(request(),res);assert.equal(res.code,400);
 });
+
+test('fase 1 aceita só contactos e usa o assunto pedido para Setúbal',async()=>{
+ let mail;const handler=createHandler({env,createTransport:()=>({sendMail:async data=>{mail=data;return {accepted:['geral@pro4build.com']}},close(){}})});
+ const res=response();await handler(request({body:{nome:body.nome,email:body.email,telefone:body.telefone,origem:'/setubal',etapa:'1'}}),res);
+ assert.equal(res.code,202);assert.equal(mail.subject,'Fase 1 Novo pedido de projeto — Pro4build | Setúbal');assert.match(mail.text,/CONTACTOS INICIAIS/);assert(!mail.text.includes('Local da construção'));
+});
+test('fase 2 mantém campos obrigatórios, assunto e referência ligada à fase 1',async()=>{
+ const mails=[];const handler=createHandler({env,createTransport:()=>({sendMail:async data=>{mails.push(data);return {accepted:['geral@pro4build.com']}},close(){}})});
+ for(const etapa of ['1','2']){const res=response();await handler(request({body:{...body,origem:'/setubal',etapa}}),res);assert.equal(res.code,202);}
+ assert.equal(mails[1].subject,'Fase 2 Novo pedido de projeto — Pro4build | Setúbal');assert.equal(mails[0].text.match(/Referência do pedido: (\w+)/)[1],mails[1].text.match(/Referência do pedido: (\w+)/)[1]);
+ const res=response();await handler(request({body:{nome:body.nome,email:body.email,telefone:body.telefone,etapa:'2'}}),res);assert.equal(res.code,400);
+});
+test('cada fase envia uma vez e a homepage mantém o assunto sem Setúbal',async()=>{
+ const saved=new Set(),mails=[];const handler=createHandler({env:{...env,BLOB_READ_WRITE_TOKEN:'test'},claim:async data=>{const key=JSON.stringify(data);if(saved.has(key))return {state:'sent'};saved.add(key);return {state:'new',complete:async()=>{}}},createTransport:()=>({sendMail:async data=>{mails.push(data);return {accepted:['geral@pro4build.com']}},close(){}})});
+ for(const etapa of ['1','1','2','2']){const res=response();await handler(request({body:{...body,origem:'/',etapa}}),res);assert.equal(res.code,202);}
+ assert.deepEqual(mails.map(mail=>mail.subject),['Fase 1 Novo pedido de projeto — Pro4build','Fase 2 Novo pedido de projeto — Pro4build']);
+});
+test('fase inválida ou contactos inválidos não enviam email',async()=>{
+ const handler=createHandler({env,createTransport:()=>{throw Error('Não deve enviar')}});
+ for(const changes of [{etapa:'3'},{etapa:'1',telefone:''},{etapa:'1',email:'inválido'},{etapa:'1',origem:'/recrutamento'}]){const res=response();await handler(request({body:{...body,...changes}}),res);assert.equal(res.code,400);}
+});
