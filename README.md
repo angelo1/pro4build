@@ -101,3 +101,12 @@ Validar a receção no Gestor de Eventos da Meta usando Testar eventos e o conse
 ## Recrutamento
 
 A página `/recrutamento` anuncia as quatro funções confirmadas pelo proprietário: encarregado de obra, pedreiro, servente e técnico de obra. O formulário recolhe contactos básicos, função, localidade e apresentação/disponibilidade opcionais. O backend reconhece `origem=/recrutamento`, valida a função e encaminha para `recrutamento@pro4build.com` com assunto próprio; os pedidos comerciais mantêm `geral@pro4build.com`. Não há eventos Pixel nas candidaturas, anexos no formulário ou seleção automática. O currículo pode ser enviado por email. O destino de recrutamento tem de existir e aceitar correio no fornecedor do domínio.
+
+
+## Documentos opcionais e prevenção de repetição
+
+A landing /setubal permite quatro ficheiros opcionais: memória descritiva (PDF/DOC/DOCX), arquitetura (ZIP), especialidades (ZIP) e quantidades (PDF/XLS/XLSX/CSV/ZIP), até 50 MB cada. O SDK oficial faz upload direto para o store privado Vercel Blob em Frankfurt; BLOB_READ_WRITE_TOKEN é fornecido pelo projeto, nunca pelo navegador. Tokens limitam caminho, tipo, tamanho, validade e não permitem substituição. Uma sessão anónima é emitida após validar origem/email/honeypot, limitada a dez sessões por IP/hora. A validação do pedido confirma categoria, sessão e metadados no armazenamento.
+
+O email recebe ligações assinadas válidas por 30 dias, sem anexos SMTP. Os ficheiros expiram automaticamente após 30 dias (processamento diário). Sessões não enviam emails. Pedidos idênticos recebem uma reserva persistente antes de SMTP: apenas o primeiro envia; uma confirmação devolve sucesso sem reenviar e um estado incerto pede contacto manual. As reservas expiram após sete dias. Isto impede repetição pela aplicação, mas não diagnostica duplicação causada por encaminhamento ou pelo servidor de correio.
+
+Atualizar o bundle com `npm run build:documents` após alterar src/documentos.js. Testes usam SMTP simulado e armazenamento em memória, sem contactar leads reais.

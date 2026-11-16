@@ -1,11 +1,12 @@
 const nodemailer = require('nodemailer');
+const documentsService = require('../lib/documentos');
 
 const RECIPIENT = 'geral@pro4build.com';
 const ORIGINS = new Set(['https://pro4build.com', 'https://www.pro4build.com']);
 const FIELDS = {nome:100, email:254, telefone:30, local:100, fase:100, area:100, investimento:100, ideia:10000, origem:200};
 const REQUIRED = ['nome', 'email', 'telefone', 'local', 'fase'];
 
-function createHandler({env = process.env, createTransport = nodemailer.createTransport} = {}) {
+function createHandler({env = process.env, createTransport = nodemailer.createTransport, prepareDocuments = documentsService.documents, claim = documentsService.claim} = {}) {
   return async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-store');
     if (req.method !== 'POST') {
@@ -43,6 +44,19 @@ function createHandler({env = process.env, createTransport = nodemailer.createTr
         !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(from || '')) {
       return res.status(503).json({error:'O envio está temporariamente indisponível. Contacte geral@pro4build.com.'});
     }
+    let files=[];
+    try {
+      if (recruitment && input.documentos?.length) return res.status(400).json({error:'Documentos de projeto apenas no pedido de construção.'});
+      files=await prepareDocuments(input);
+    } catch { return res.status(400).json({error:'Verifique os documentos e volte a tentar. Nenhum email foi enviado.'}); }
+    let reservation;
+    if (env.BLOB_READ_WRITE_TOKEN) {
+      try {
+        reservation=await claim(data,files);
+        if(reservation.state==='sent') return res.status(202).json({ok:true,duplicate:true});
+        if(reservation.state!=='new') return res.status(409).json({error:'Este pedido já está em processamento ou aguarda confirmação. Contacte geral@pro4build.com antes de repetir.'});
+      } catch { return res.status(503).json({error:'O envio está temporariamente indisponível. Contacte geral@pro4build.com.'}); }
+    }
     let transport;
     try {
       transport = createTransport({host:env.SMTP_HOST, port, secure:port === 465, requireTLS:port === 587,
@@ -52,11 +66,14 @@ function createHandler({env = process.env, createTransport = nodemailer.createTr
         disableFileAccess:true, disableUrlAccess:true});
       const projectLabels = {nome:'Nome',email:'Email',telefone:'Telefone',local:'Local da construção',fase:'Situação',area:'Área',investimento:'Investimento previsto',ideia:'Ideia e prioridades',origem:'Página de origem'};
       const labels = recruitment ? {nome:'Nome',email:'Email',telefone:'Telefone',local:'Localidade de residência',fase:'Função pretendida',area:'Disponibilidade',ideia:'Experiência e apresentação',origem:'Página de origem'} : projectLabels;
-      const text = (recruitment ? 'PRO4BUILD — NOVA CANDIDATURA\n\n' : 'PRO4BUILD — NOVO PEDIDO DE PROJETO\n\n') + Object.entries(labels).map(([key,label]) => label + ': ' + (data[key] || 'Não indicado')).join('\n\n');
+      let text = (recruitment ? 'PRO4BUILD — NOVA CANDIDATURA\n\n' : 'PRO4BUILD — NOVO PEDIDO DE PROJETO\n\n') + Object.entries(labels).map(([key,label]) => label + ': ' + (data[key] || 'Não indicado')).join('\n\n');
+      if(files.length) text+='\n\nDOCUMENTOS DO PROJETO (ligações privadas válidas por 30 dias)\n\n'+files.map(file=>file.label+': '+file.name+'\n'+file.url).join('\n\n');
       const result = await transport.sendMail({from:{name:'Pro4build — Website',address:from}, to:recipient,
         replyTo:{name:data.nome,address:data.email}, subject:recruitment ? 'Candidatura — Pro4build' : data.origem === '/setubal' ? 'Novo pedido de projeto — Pro4build | Setúbal' : 'Novo pedido de projeto — Pro4build', text,
         disableFileAccess:true, disableUrlAccess:true});
       if (!result.accepted?.some(address => String(address).toLowerCase() === recipient)) throw new Error('Recipient not accepted');
+      // After SMTP accepts, never resend even if saving the confirmation fails.
+      if(reservation) { try { await reservation.complete(); } catch {} }
       return res.status(202).json({ok:true});
     } catch {
       // Não expor credenciais, respostas SMTP ou dados pessoais nos logs/resposta.

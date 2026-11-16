@@ -59,3 +59,25 @@ test('rejeita email com injeção de cabeçalhos, campos obrigatórios vazios e 
   const res=response();await handler(request({body:{...body,origem:'/setubal'}}),res);
   assert.equal(res.code,202);assert.match(mail.subject,/Setúbal/);assert.match(mail.text,/Página de origem: \/setubal/);
  });
+
+test('repetição confirmada não volta a enviar email',async()=>{
+ let calls=0;let complete=false;
+ const handler=createHandler({env:{...env,BLOB_READ_WRITE_TOKEN:'test-only'},claim:async()=>complete?{state:'sent'}:{state:'new',complete:async()=>{complete=true}},createTransport:()=>({sendMail:async()=>{calls++;return {accepted:['geral@pro4build.com']}},close(){}})});
+ const first=response();await handler(request(),first);const second=response();await handler(request(),second);
+ assert.equal(first.code,202);assert.equal(second.code,202);assert.equal(second.data.duplicate,true);assert.equal(calls,1);
+});
+test('pedido pendente ou falha de armazenamento nunca repete SMTP',async()=>{
+ for(const claim of [async()=>({state:'pending'}),async()=>{throw Error('outage')}]){
+  const handler=createHandler({env:{...env,BLOB_READ_WRITE_TOKEN:'test-only'},claim,createTransport:()=>{throw Error('Não deve enviar')}});
+  const res=response();await handler(request(),res);assert([409,503].includes(res.code));assert(!res.data.ok);
+ }
+});
+test('email inclui ligações aos quatro documentos opcionais validados',async()=>{
+ let mail;const files=['memoria','arquitetura','especialidades','quantidades'].map(kind=>({kind,name:kind+'.zip',label:kind,url:'https://www.pro4build.com/api/documentos?ticket=test'}));
+ const handler=createHandler({env,prepareDocuments:async()=>files,createTransport:()=>({sendMail:async data=>{mail=data;return {accepted:['geral@pro4build.com']}},close(){}})});
+ const res=response();await handler(request(),res);assert.equal(res.code,202);assert.match(mail.text,/DOCUMENTOS DO PROJETO/);for(const file of files)assert(mail.text.includes(file.name));
+});
+test('documento inválido impede o envio do pedido',async()=>{
+ const handler=createHandler({env,prepareDocuments:async()=>{throw Error('Invalid path')},createTransport:()=>{throw Error('Não deve enviar')}});
+ const res=response();await handler(request(),res);assert.equal(res.code,400);
+});
