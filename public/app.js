@@ -22,11 +22,13 @@ document.querySelector('#print-report').onclick=()=>{const current=document.quer
 const menu=document.querySelector('.menu');menu.onclick=()=>{let open=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',open);document.querySelector('nav').classList.toggle('open',open)};document.querySelectorAll('nav a').forEach(a=>a.onclick=()=>{menu.setAttribute('aria-expanded',false);document.querySelector('nav').classList.remove('open')});
 let briefUrl;
 const briefForm=document.querySelector('#brief-form');
+let briefSent=false;
 briefForm.onsubmit=async e=>{
   e.preventDefault();
   const button=briefForm.querySelector('[type="submit"]');
-  if(button.disabled)return;
+  if(button.disabled||briefSent)return;
   const data=Object.fromEntries(new FormData(briefForm));
+  for(const key of Object.keys(data))if(typeof data[key]!=='string')delete data[key];
   const status=document.querySelector('#send-status');
   const labels={nome:'Nome',email:'Email',telefone:'Contacto telefónico',local:'Local',fase:'Situação',area:'Área',investimento:'Investimento previsto',ideia:'Ideia e prioridades'};
   const content='PRO4BUILD — O MEU PROJETO\n\n'+Object.entries(labels).map(([key,label])=>label+': '+(data[key]||'Não indicado')).join('\n\n')+'\n\nCópia do pedido. O estado de envio é apresentado no website.';
@@ -37,15 +39,17 @@ briefForm.onsubmit=async e=>{
   status.textContent='A enviar o seu pedido…';status.setAttribute('role','status');
   button.disabled=true;briefForm.setAttribute('aria-busy','true');
   try{
+    await window.pro4buildDocuments?.prepare(briefForm,data);
     const response=await fetch('/api/contacto',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
     const result=await response.json();
     if(!response.ok||result.ok!==true)throw new Error(result.error||'Não foi possível confirmar o envio. Contacte geral@pro4build.com.');
+    briefSent=true;button.textContent='Pedido enviado ✓';
     status.textContent='O seu pedido foi aceite pelo serviço de email para envio à Pro4build. Obrigado pelo contacto.';
   }catch(error){
     status.setAttribute('role','alert');
     status.textContent=error instanceof TypeError?'A ligação foi interrompida e não foi possível confirmar o envio. Contacte geral@pro4build.com antes de repetir o pedido.':error.message;
   }finally{
-    button.disabled=false;briefForm.removeAttribute('aria-busy');
+    button.disabled=briefSent;briefForm.removeAttribute('aria-busy');
     document.querySelector('#form-result').scrollIntoView({block:'nearest',behavior:'smooth'});
   }
 };

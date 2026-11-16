@@ -110,3 +110,5 @@ A landing /setubal permite quatro ficheiros opcionais: memória descritiva (PDF/
 O email recebe ligações assinadas válidas por 30 dias, sem anexos SMTP. Os ficheiros expiram automaticamente após 30 dias (processamento diário). Sessões não enviam emails. Pedidos idênticos recebem uma reserva persistente antes de SMTP: apenas o primeiro envia; uma confirmação devolve sucesso sem reenviar e um estado incerto pede contacto manual. As reservas expiram após sete dias. Isto impede repetição pela aplicação, mas não diagnostica duplicação causada por encaminhamento ou pelo servidor de correio.
 
 Atualizar o bundle com `npm run build:documents` após alterar src/documentos.js. Testes usam SMTP simulado e armazenamento em memória, sem contactar leads reais.
+
+Os formulários da página principal e de /setubal usam dois cartões sequenciais: contactos (nome/email/telefone), depois dados de projeto e anexos opcionais. Continuar valida apenas os contactos e não envia emails. Voltar preserva os valores e ficheiros; o pedido completo é enviado apenas no último passo. O controlador partilhado está em public/form-steps.js.

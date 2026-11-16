@@ -1,5 +1,12 @@
 (function(){
   const en={
+"Etapas do pedido":"Enquiry steps",
+"Contactos":"Contact details",
+"O projeto":"The project",
+"Os teus contactos":"Your contact details",
+"O teu projeto":"Your project",
+"Continuar":"Continue",
+"← Voltar aos contactos":"← Back to contact details",
 "Documentos do projeto":"Project documents",
 "(PDF, DOC ou DOCX)":"(PDF, DOC or DOCX)",
 "(PDF, XLS, XLSX, CSV ou ZIP)":"(PDF, XLS, XLSX, CSV or ZIP)",
