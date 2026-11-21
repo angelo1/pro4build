@@ -102,3 +102,10 @@ test('fase inválida ou contactos inválidos não enviam email',async()=>{
  const handler=createHandler({env,createTransport:()=>{throw Error('Não deve enviar')}});
  for(const changes of [{etapa:'3'},{etapa:'1',telefone:''},{etapa:'1',email:'inválido'},{etapa:'1',origem:'/recrutamento'}]){const res=response();await handler(request({body:{...body,...changes}}),res);assert.equal(res.code,400);}
 });
+
+test('identifica as duas fases dos pedidos de mapas de quantidades',async()=>{
+ const mails=[];const handler=createHandler({env,createTransport:()=>({sendMail:async mail=>{mails.push(mail);return {accepted:['geral@pro4build.com']}},close(){}})});
+ for(const etapa of ['1','2']){const res=response();await handler(request({body:{...body,origem:'/mapas',etapa}}),res);assert.equal(res.code,202);}
+ assert.deepEqual(mails.map(mail=>mail.subject),['Fase 1 Novo pedido de mapas de quantidades — Pro4build','Fase 2 Novo pedido de mapas de quantidades — Pro4build']);
+ assert(mails.every(mail=>mail.to==='geral@pro4build.com'&&mail.text.includes('NOVO PEDIDO DE MAPAS DE QUANTIDADES')));
+});

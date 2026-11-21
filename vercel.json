@@ -17,6 +17,10 @@
     {
       "source": "/recrutamento",
       "destination": "/recrutamento.html"
+    },
+    {
+      "source": "/mapas",
+      "destination": "/mapas.html"
     }
   ]
 }

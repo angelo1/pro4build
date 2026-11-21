@@ -74,13 +74,14 @@ function createHandler({env = process.env, createTransport = nodemailer.createTr
         connectionTimeout:10000, greetingTimeout:10000, socketTimeout:15000,
         tls:{minVersion:'TLSv1.2'}, logger:false, debug:false,
         disableFileAccess:true, disableUrlAccess:true});
+      const projectSubject=data.origem==='/mapas'?'Novo pedido de mapas de quantidades — Pro4build':data.origem==='/setubal'?'Novo pedido de projeto — Pro4build | Setúbal':'Novo pedido de projeto — Pro4build';
       const projectLabels = {nome:'Nome',email:'Email',telefone:'Telefone',local:'Local da construção',fase:'Situação',area:'Área',investimento:'Investimento previsto',ideia:'Ideia e prioridades',origem:'Página de origem'};
       const labels = firstStage ? {nome:'Nome',email:'Email',telefone:'Telefone',origem:'Página de origem'} : recruitment ? {nome:'Nome',email:'Email',telefone:'Telefone',local:'Localidade de residência',fase:'Função pretendida',area:'Disponibilidade',ideia:'Experiência e apresentação',origem:'Página de origem'} : projectLabels;
-      let text = (recruitment ? 'PRO4BUILD — NOVA CANDIDATURA\n\n' : 'PRO4BUILD — NOVO PEDIDO DE PROJETO\n\n') + Object.entries(labels).map(([key,label]) => label + ': ' + (data[key] || 'Não indicado')).join('\n\n');
+      let text = (recruitment ? 'PRO4BUILD — NOVA CANDIDATURA\n\n' : (data.origem==='/mapas'?'PRO4BUILD — NOVO PEDIDO DE MAPAS DE QUANTIDADES\n\n':'PRO4BUILD — NOVO PEDIDO DE PROJETO\n\n')) + Object.entries(labels).map(([key,label]) => label + ': ' + (data[key] || 'Não indicado')).join('\n\n');
       if(data.etapa) text='FASE '+data.etapa+' — '+(firstStage?'CONTACTOS INICIAIS':'DADOS DO PROJETO')+'\nReferência do pedido: '+reference+'\n\n'+text;
       if(files.length) text+='\n\nDOCUMENTOS DO PROJETO (ligações privadas válidas por 30 dias)\n\n'+files.map(file=>file.label+': '+file.name+'\n'+file.url).join('\n\n');
       const result = await transport.sendMail({from:{name:'Pro4build — Website',address:from}, to:recipient,
-        replyTo:{name:data.nome,address:data.email}, subject:recruitment ? 'Candidatura — Pro4build' : (data.etapa?'Fase '+data.etapa+' ':'')+(data.origem === '/setubal' ? 'Novo pedido de projeto — Pro4build | Setúbal' : 'Novo pedido de projeto — Pro4build'), text,
+        replyTo:{name:data.nome,address:data.email}, subject:recruitment ? 'Candidatura — Pro4build' : (data.etapa?'Fase '+data.etapa+' ':'')+projectSubject, text,
         disableFileAccess:true, disableUrlAccess:true});
       if (!result.accepted?.some(address => String(address).toLowerCase() === recipient)) throw new Error('Recipient not accepted');
       // After SMTP accepts, never resend even if saving the confirmation fails.
