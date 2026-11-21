@@ -112,3 +112,8 @@ O email recebe ligações assinadas válidas por 30 dias, sem anexos SMTP. Os fi
 Atualizar o bundle com `npm run build:documents` após alterar src/documentos.js. Testes usam SMTP simulado e armazenamento em memória, sem contactar leads reais.
 
 Os formulários da página principal e de /setubal usam dois cartões sequenciais: contactos (nome/email/telefone), depois dados de projeto e anexos opcionais. Enviar contactos e continuar valida e envia imediatamente nome, email e telefone como Fase 1. Voltar preserva os valores e ficheiros; a Fase 2 envia os dados completos e anexos no último passo. Os assuntos distinguem as fases e o corpo inclui a mesma referência, calculada a partir dos contactos e da origem. Cada fase tem deduplicação independente. O controlador partilhado está em public/form-steps.js.
+
+
+## Landing de mapas de quantidades
+
+`/mapas` usa public/mapas.html, mapas.css e mapas.js e partilha os controladores de formulário em duas fases, documentos privados e consentimento de marketing existentes. A proposta é mapas de quantidades em 10 dias úteis após receção/validação dos elementos necessários e confirmação do âmbito. O exemplo de mapa na página é ilustrativo, sem quantidades ou preços reais. Pedidos com origem=/mapas recebem assuntos Fase 1/Fase 2 Novo pedido de mapas de quantidades — Pro4build, para geral@pro4build.com. Os campos e a política de dados existentes aplicam-se também a esta página.
